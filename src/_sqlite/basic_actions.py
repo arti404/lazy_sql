@@ -10,8 +10,8 @@ class BaseWrapper:
         return self.cursor
     
     def command(self, prompt:str):
-        """execute a command and return the result if it's meant to return anything"""
-        return self.cursor.execute(prompt)
+        """execute a command"""
+        self.cursor.execute(prompt)
     
     def commit(self, prompt:str):
         """execute a command and commit the changes"""
@@ -26,21 +26,27 @@ class Action(BaseWrapper):
     """a main wrapper for sqlite3"""
     def __init__(self, db_name, **kwargs):
         super().__init__(db_name, kwargs=kwargs)
-        return self.cursor
     
     def create_table(self, table_name:str, columns:list[dict|tuple]):
         """
-        create a table with the given columns
-        -----------------
-        :param table_name: the name of the table
-        :param columns: a list of dictionaries or tuples, each containing the column name and type\n
-        -----------------
-        column_dict_hint: {
-            'name': 'column_name',
-            'type': 'column_type(BIGINT, INTEGER, REAL, TEXT, BLOB, etc.)'
-            'primary'(optional): True(if u need it, must be UNIQUE for table, so will be used only the first one if couple are specified)
-        }
-        column_tuple_hint: ('column_name', 'column_type')
+        Create a table with the given columns.
+
+        Args:
+            table_name (str): The name of the table to be created.
+            columns (list): A list of dictionaries or tuples, each containing the column name and type.
+
+        Column Definition Examples:
+            ```python
+            # Dictionary format:
+            {
+                'name': 'column_name',
+                'type': 'column_type',  # e.g., BIGINT, INTEGER, REAL, TEXT, BLOB, etc.
+                'primary': True  # Optional; if True, this column will be PRIMARY KEY (must be UNIQUE)
+            }
+            
+            # Tuple format:
+            ('column_name', 'column_type')
+            ```
         """
         tables = str()
         for column in columns:
